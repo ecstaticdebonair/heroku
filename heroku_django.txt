@@ -1,0 +1,143 @@
+website link
+https://www.codementor.io/@jamesezechukwu/how-to-deploy-django-app-on-heroku-dtsee04d4
+
+
+1.create venv
+virtualenv django_env
+django_env\Scripts\activate
+
+2.Install Django in the newly created environment, using pip
+  pip install django
+
+3.Create The Project
+(django_env):~$ django-admin startproject djangoherokuapp
+
+4.Create The App
+(django_env):~/Desktop$  cd djangoherokuapp
+(django_env):~/Desktop/djangoherokuapp$  python manage.py startapp herokuapp
+
+5.Add 'herokuapp' to installed apps in settings.py
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'herokuapp',
+]
+
+6.Migrate the database and start the development server to see what we have so far.
+
+(django_env):~/Desktop/djangoherokuapp$  python manage.py migrate
+
+7.Start the development server.
+
+(django_env):~/Desktop/djangoherokuapp$ python manage.py runserver
+
+8.Deploy App to Heroku
+(django_env):~/Desktop/djangoherokuapp$ heroku login
+
+9.Add a Procfile in the project root directory to define process types and explicitly declare what command should be executed to start your app.
+echo web: run this thing >Procfile
+//(django_env):~/Desktop/djangoherokuapp$ touch Procfile
+
+10.Open the Procfile and add the line below.
+
+web: gunicorn djangoherokuapp.wsgi --log-file -
+
+11.Add a runtime.txt file in the project root directory and specify the correct Python version.
+Open the runtime.txt file and add the following line, or as applicable, to your application.
+
+
+python-2.7.12
+
+12.Install the following packages in the environment (See why we need the packages).
+(django_env):~/Desktop/djangoherokuapp$ pip install gunicorn dj-database-url whitenoise psycopg2
+
+13.Add a requirements.txt file
+(django_env):~/Desktop/djangoherokuapp$ pip freeze > requirements.txt
+
+14.Set Up the Static Assets
+Open up settings.py file and make the following changes,
+ preferably at the bottom of the file.
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.11/howto/static-files/
+PROJECT_ROOT   =   os.path.join(os.path.abspath(__file__))
+STATIC_ROOT  =   os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_URL = '/static/'
+
+# Extra lookup directories for collectstatic to find static files
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'static'),
+)
+
+#  Add configuration for static files storage using whitenoise
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+
+14.Add whitenoise middleware at the top of the middleware list in settings.py
+
+MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+
+14.1.debug
+
+DEBUG = False
+
+15.Update Database Configuration in settings.py (at the bottom of the file)
+import dj_database_url 
+prod_db  =  dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(prod_db)
+
+16.Create App in Heroku from terminal
+(django_env):~/Desktop/djangoherokuapp$ heroku create herokudjangoapp
+
+17.Add your app domain name to ALLOWED_HOSTS in settings.py.
+
+ALLOWED_HOSTS = ['herokudjangoapp.herokuapp.com']
+
+ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
+
+18.Initialize Git and connect your new app (or existing one) to Heroku Git remote repository.
+
+(django_env):~/Desktop/djangoherokuapp$ git init
+
+119.
+(django_env):~/Desktop/djangoherokuapp$ heroku git:remote -a heroku-django-app-akshay
+(django_env):~/Desktop/djangoherokuapp$ git add .
+(django_env):~/Desktop/djangoherokuapp$ git commit -m "Initial commit"
+(django_env):~/Desktop/djangoherokuapp$ git push heroku master
+(django_env):~/Desktop/djangoherokuapp$ heroku config:set     DISABLE_COLLECTSTATIC=1 
+(django_env):~/Desktop/djangoherokuapp$ git push heroku master  //to rerun
+(django_env):~/Desktop/djangoherokuapp$ heroku run python manage.py migrate    //migrate the database
+
+
+
+$ heroku login
+$ git status
+$ git add -A .
+$ git commit -m "additional files and changes for Heroku"
+heroku create <your_app's_name>
+heroku config:set DEBUG_COLLECTSTATIC=1
+heroku config:set DISABLE_COLLECTSTATIC=1
+git push heroku master
+heroku run python manage.py migrate
+heroku run python manage.py createsuperuser
+heroku open
+
+19.Resolving Errors
+
+In case you see application error on your website run:
+
+$heroku logs --tail
