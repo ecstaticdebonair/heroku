@@ -1,0 +1,20 @@
+1.CREATE APP IN HIROKU
+  pet-shop-heroku 
+2.GO TO NODE JS PROJECT AND TYPE HEROKU LOGIN
+  heroku login
+3.type
+   git init
+4.type to create git repository
+   heroku git:remote -a "pet-shop-heroku"
+5.go to gitignore and type
+   .env
+   /node_modules
+6.add files to repository
+  git add .
+7.commit the files to repository
+  git commit -am "initial commit"
+8.push project to heroku
+  git push heroku master
+9.to opn the application
+   heorku open
+10.
