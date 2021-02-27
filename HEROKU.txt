@@ -16,5 +16,34 @@
 8.push project to heroku
   git push heroku master
 9.to opn the application
-   heroku open
-10.
+   heorku open
+10.resolve the error
+  create the procfile and add this text
+web: node ./app.js
+
+
+to edit the files
+https://dashboard.heroku.com/apps/akshay-app10/deploy/github
+
+
+
+
+to pusblish git app on heroku
+1.go to directory
+ cd myapp
+2.Initialized empty Git repository in .git/
+  git init
+3.then add
+  git add .
+4.then makr first commit
+ git commit -m "My first commit"
+5.creates a new empty application on Heroku,
+  heroku create
+6. command to confirm that a remote named heroku has been set for your app
+  git remote -v
+7.If you have already created your Heroku app, you can easily add a remote to your local repository
+  heroku git:remote -a app-name
+8.to rename app
+  git remote rename heroku heroku-staging
+9.deploy code
+  git push heroku master
